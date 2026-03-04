@@ -9,7 +9,7 @@ export const inngest = new Inngest({id: "talk-live",});
 
 
 const syncUser = inngest.createFunction(
-{id: "sync-user"},
+{id: "talk-live"},
 {event:"clerk/user.created"},
 async({event}) => {
     await connectToDatabase();
