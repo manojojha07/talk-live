@@ -5,7 +5,7 @@ import { connectToDatabase } from './db.js';
 
 
 
-export const inngest = new Inngest({id: "talk-live",});
+export const inngest = new Inngest({ id: "talk-live" });
 
 
 const syncUser = inngest.createFunction(
