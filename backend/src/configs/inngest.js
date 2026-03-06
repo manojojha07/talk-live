@@ -2,10 +2,7 @@ import { Inngest } from "inngest";
 import User from "../models/User.js";
 import { connectToDatabase } from "./db.js";
 
-export const inngest = new Inngest({
-  id: "talk-live",
-//   eventKey: process.env.INNGEST_EVENT_KEY
-});
+export const inngest = new Inngest({id: "talk-live"});
 
 // CREATE USER
 const syncUser = inngest.createFunction(
@@ -24,6 +21,9 @@ const syncUser = inngest.createFunction(
     };
 
     await User.create(newUser);
+
+    // todo: do smothing
+
   }
 );
 
@@ -37,6 +37,9 @@ const deleteUserFromDB = inngest.createFunction(
     const { id } = event.data;
 
     await User.deleteOne({ clerkId: id });
+
+        // todo: do smothing
+
   }
 );
 
