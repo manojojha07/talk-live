@@ -12,10 +12,7 @@ const PORT = process.env.PORT || 5000;
 
 // Middleware
 app.use(express.json());
-app.use(cors({
-  origin: "http://localhost:5173", // fixed extra space
-  credentials: true
-}));
+app.use(cors());
 
 // Inngest endpoints
 app.use('/api/inngest', serve({ client: inngest, functions }));
