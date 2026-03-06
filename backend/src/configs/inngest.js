@@ -1,47 +1,43 @@
-import { Inngest } from 'inngest';
-import User from '../models/User.js';
-import { connectToDatabase } from './db.js';
+import { Inngest } from "inngest";
+import User from "../models/User.js";
+import { connectToDatabase } from "./db.js";
 
+export const inngest = new Inngest({
+  id: "talk-live",
+//   eventKey: process.env.INNGEST_EVENT_KEY
+});
 
-
-
-export const inngest = new Inngest({id: "talk-live",});
-
-
+// CREATE USER
 const syncUser = inngest.createFunction(
- { id: "sync-user" },
-{event:"clerk/user.created"},
-async({event}) => {
+  { id: "sync-user" },
+  { event: "clerk/user.created" },
+  async ({ event }) => {
     await connectToDatabase();
 
-    const {id, email_addresses, first_name, last_name, image_url } = event.data;
+    const { id, email_addresses, first_name, last_name, image_url } = event.data;
 
     const newUser = {
-        clerkId:id,
-        email:email_addresses?.email_address,
-        name: `${first_name || ""} ${last_name || ""}`,
-        profileImage: image_url
-    }
+      clerkId: id,
+      email: email_addresses?.[0]?.email_address,
+      name: `${first_name || ""} ${last_name || ""}`,
+      profileImage: image_url,
+    };
 
     await User.create(newUser);
+  }
+);
 
-
-    // todo smt else
-}
-)
-
-
-const deleteUserFormDB = inngest.createFunction(
-{id: "delete-user-from-db"},
-{ event : "clerk/user.deleted"},
-async({event}) => {
+// DELETE USER
+const deleteUserFromDB = inngest.createFunction(
+  { id: "delete-user-from-db" },
+  { event: "clerk/user.deleted" },
+  async ({ event }) => {
     await connectToDatabase();
 
     const { id } = event.data;
-    await User.deleteOne({clerkId: id});
 
-    // todo: smt else
-}
-)
+    await User.deleteOne({ clerkId: id });
+  }
+);
 
-export const functions = [syncUser , deleteUserFormDB];
+export const functions = [syncUser, deleteUserFromDB];
