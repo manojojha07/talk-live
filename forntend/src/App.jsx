@@ -7,7 +7,7 @@ const App = () => {
       <h1>Welcome to our web Application</h1>
           <SignedOut>
         <SignInButton mode="modal">
-          <button>Sign In</button>
+          <button>LogIn</button>
         </SignInButton>
       </SignedOut>
 
