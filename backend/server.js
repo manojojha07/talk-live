@@ -7,6 +7,7 @@ import { clerkMiddleware } from '@clerk/express'
 import { connectToDatabase } from './src/configs/db.js';
 import { functions, inngest } from './src/configs/inngest.js';
 import chatRouter from './src/routes/chatRoutes.js';
+import sesstionRouter from './src/routes/sessionRoutes.js';
 
 dotenv.config();
 
@@ -24,11 +25,12 @@ app.use(clerkMiddleware()) //this adds auth fileds to request object: req.auth()
 // Inngest endpoints
 app.use('/api/inngest', serve({ client: inngest, functions }));
 app.use('/api/chat' , chatRouter);
+app.use('/api/sessions' , sesstionRouter);
 
 // Test route
 app.get('/', (req, res) => {
   req.auth;
-  res.status(200).json({ msg: "Server live backend 123!" });
+  res.status(200).json({ message: "Server live backend 123!" });
 });
 
 

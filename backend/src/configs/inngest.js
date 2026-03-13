@@ -2,8 +2,9 @@ import { Inngest } from "inngest";
 import User from "../models/User.js";
 import { connectToDatabase } from "./db.js";
 import { deleteStreamUser, upsertStreamUser } from "./stream.js";
+import { transporter } from "./nodemailer.js"; // ✅ Import transporter from your new file
 
-export const inngest = new Inngest({id: "talk-live"});
+export const inngest = new Inngest({ id: "talk-live" });
 
 // CREATE USER
 const syncUser = inngest.createFunction(
@@ -23,13 +24,24 @@ const syncUser = inngest.createFunction(
 
     await User.create(newUser);
 
-    // todo: do smothing
     await upsertStreamUser({
       id: newUser.clerkId.toString(),
-      name:newUser.name,
-      image: newUser.profileImage
-    })
+      name: newUser.name,
+      image: newUser.profileImage,
+    });
 
+    // Send Welcome Email
+    await transporter.sendMail({
+      from: `"TalkLive" <${process.env.EMAIL_USER}>`,
+      to: newUser.email,
+      subject: "Welcome to TalkLive 🎉",
+      html: `
+        <h2>Hello ${newUser.name}</h2>
+        <p>Welcome to TalkLive!</p>
+        <p>Your account has been successfully created.</p>
+        <p>Start chatting and video calling now 🚀</p>
+      `,
+    });
   }
 );
 
