@@ -108,7 +108,15 @@ export const joinSession = async (req, res) => {
         if(!session) return res.status(404).json({message : "Session not found!"});
 
         // check if session is already full - has a particepent 
-        if(session.participant) return res.status(404).json({message: "Session is full "});
+        if(session.participant) return res.status(409).json({message: "Session is full "});
+
+        if(session.status !== 'active'){
+         return res.status(400).json({message: "cannot join a complete session"})
+        }
+             
+       if(session.host.toString() === userId.toString()){
+        return res.status(400).json({message: "host cannot join tehere own session as particepant"})
+       }
 
         session.participant = userId;
         await session.save();
@@ -144,8 +152,7 @@ export const endSession = async (req, res) => {
             return res.status(400).json({message: "session is allready completed!"});
         }
 
-        session.status = 'completed'
-        await session.save();
+       
 
         // delete the stream viddeo call
         const call = streamClient.video.call('default', session.callId)
@@ -154,6 +161,9 @@ export const endSession = async (req, res) => {
         // delete stream chat channel
         const channel = chatClient.channel("messaging", session.callId);
         await channel.delete();
+
+         session.status = 'completed'
+        await session.save();
         
         res.status(200).json({session, message :"Session ended Successfully"})
 
