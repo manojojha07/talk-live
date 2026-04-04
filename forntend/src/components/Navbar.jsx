@@ -2,6 +2,7 @@ import React from 'react'
 import { useLocation,Link } from 'react-router'
 import { BookOpenIcon, LayoutDashboardIcon, SparkleIcon } from 'lucide-react'
 import { UserButton } from '@clerk/clerk-react'
+import { sessionApi } from '../api/sessions'
 
 const Navbar = () => {
 

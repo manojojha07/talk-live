@@ -29,7 +29,7 @@ const App = () => {
       <Route path="/problem/:id" element={ isSignedIn ? < ProblemPage/> : <Navigate to='/' /> } />
 
 
-      <Route path="*" element={ < NotFoundRoute/>} />
+      {/* <Route path="*" element={ < NotFoundRoute/>} /> */}
 
 
     </Routes>
